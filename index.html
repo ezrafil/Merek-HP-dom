@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <title>Daftar Merk HP</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+</head>
+<body>
+    <div class="container">
+        <h1>Daftar Merek HP yang Tersedia</h1>
+
+        <div class="form-container">
+            <input type="text" id="brandInput" placeholder="Masukkan merek HP...">
+            <input type="number" id="stockInput" placeholder="Stok" min="0">
+            <button id="addButton" onclick="addOrUpdateBrand()">Tambah</button>
+        </div>
+
+        <ul id="brandList">
+            
+            <li>
+                <span><strong>README</strong> - Stok: 10</span>
+                <button onclick="editBrand(this)"><i class="fas fa-edit"></i></button>
+                <button onclick="removeBrand(this)"><i class="fas fa-trash-alt"></i></button>
+            </li>
+            <li>
+                <span><strong>IPHONE</strong> - Stok: 5</span>
+                <button onclick="editBrand(this)"><i class="fas fa-edit"></i></button>
+                <button onclick="removeBrand(this)"><i class="fas fa-trash-alt"></i></button>
+            </li>
+        </ul>
+    </div>
+
+<script>
+    let editMode = false;
+    let currentLi = null;
+
+    function addOrUpdateBrand() {
+        const brandInput = document.getElementById('brandInput');
+        const stockInput = document.getElementById('stockInput');
+        const brandName = brandInput.value.trim();
+        const stock = parseInt(stockInput.value.trim());
+        const ul = document.getElementById('brandList');
+        const addButton = document.getElementById('addButton');
+
+        if (brandName === '' || isNaN(stock) || stock < 0) {
+            alert('Masukkan nama merek dan stok yang valid!');
+            return;
+        }
+
+        if (editMode) {
+            
+            currentLi.querySelector('span').innerHTML = `<strong>${brandName.toUpperCase()}</strong> - Stok: ${stock}`;
+            resetForm();
+        } else {
+            
+            const existingItems = ul.querySelectorAll('li span');
+            for (let item of existingItems) {
+                const name = item.textContent.split('-')[0].trim();
+                if (name.toLowerCase() === brandName.toLowerCase()) {
+                    alert('Merek ini sudah ada dalam daftar.');
+                    return;
+                }
+            }
+
+            
+            const li = document.createElement('li');
+            const span = document.createElement('span');
+            span.innerHTML = `<strong>${brandName.toUpperCase()}</strong> - Stok: ${stock}`;
+            const editBtn = document.createElement('button');
+            editBtn.innerHTML = '<i class="fas fa-edit"></i>';
+            editBtn.onclick = function () { editBrand(editBtn); };
+            const deleteBtn = document.createElement('button');
+            deleteBtn.innerHTML = '<i class="fas fa-trash-alt"></i>';
+            deleteBtn.onclick = function () { removeBrand(deleteBtn); };
+
+            li.appendChild(span);
+            li.appendChild(editBtn);
+            li.appendChild(deleteBtn);
+            ul.appendChild(li);
+
+            resetForm();
+        }
+    }
+
+    function editBrand(button) {
+        const li = button.parentElement;
+        const span = li.querySelector('span');
+        const text = span.textContent;
+        const parts = text.split('-');
+
+        const brand = parts[0].trim();
+        const stock = parts[1] ? parseInt(parts[1].replace('Stok:', '').trim()) : 0;
+
+        document.getElementById('brandInput').value = brand;
+        document.getElementById('stockInput').value = stock;
+
+        document.getElementById('addButton').textContent = 'Update';
+        editMode = true;
+        currentLi = li;
+    }
+
+    function removeBrand(button) {
+        const li = button.parentElement;
+        li.classList.add('fade-out');
+        setTimeout(() => {
+            li.remove();
+            if (editMode && li === currentLi) {
+                resetForm();
+            }
+        }, 300);
+    }
+
+    function resetForm() {
+        document.getElementById('brandInput').value = '';
+        document.getElementById('stockInput').value = '';
+        document.getElementById('addButton').textContent = 'Tambah';
+        editMode = false;
+        currentLi = null;
+    }
+</script>
+</body>
+</html>
