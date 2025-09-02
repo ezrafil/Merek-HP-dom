@@ -17,25 +17,14 @@
             <button id="addButton" onclick="addOrUpdateBrand()">Tambah</button>
         </div>
 
-        <ul id="brandList">
-            
-            <li>
-                <span><strong>README</strong> - Stok: 10</span>
-                <button onclick="editBrand(this)"><i class="fas fa-edit"></i></button>
-                <button onclick="removeBrand(this)"><i class="fas fa-trash-alt"></i></button>
-            </li>
-            <li>
-                <span><strong>IPHONE</strong> - Stok: 5</span>
-                <button onclick="editBrand(this)"><i class="fas fa-edit"></i></button>
-                <button onclick="removeBrand(this)"><i class="fas fa-trash-alt"></i></button>
-            </li>
-        </ul>
+        <ul id="brandList"></ul>
     </div>
 
 <script>
     let editMode = false;
     let currentLi = null;
 
+    
     function addOrUpdateBrand() {
         const brandInput = document.getElementById('brandInput');
         const stockInput = document.getElementById('stockInput');
@@ -53,8 +42,8 @@
             
             currentLi.querySelector('span').innerHTML = `<strong>${brandName.toUpperCase()}</strong> - Stok: ${stock}`;
             resetForm();
+
         } else {
-            
             const existingItems = ul.querySelectorAll('li span');
             for (let item of existingItems) {
                 const name = item.textContent.split('-')[0].trim();
@@ -89,7 +78,6 @@
         const span = li.querySelector('span');
         const text = span.textContent;
         const parts = text.split('-');
-
         const brand = parts[0].trim();
         const stock = parts[1] ? parseInt(parts[1].replace('Stok:', '').trim()) : 0;
 
@@ -101,6 +89,7 @@
         currentLi = li;
     }
 
+    
     function removeBrand(button) {
         const li = button.parentElement;
         li.classList.add('fade-out');
